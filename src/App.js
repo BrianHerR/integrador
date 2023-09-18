@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import Nav from './Componentes/Nav/Nav'
+import Cards from './Componentes/Cards/Cards'
+import {Routes, Route} from 'react-router-dom'
+import React, { useState } from 'react'
 import './App.css';
 
 function App() {
+  const [characters, setCharacters] = useState([])
+  
+  const onSearch = (characterID) =>{
+   
+    fetch(`https://rickandmortyapi.com/api/character/${characterID}`)
+    .then((response)=>response.json())
+    .then((data)=>{
+      if(data.name){setCharacters((previoEstado)=>[...previoEstado,data])}
+      else{window.alert(`Hay un problema: ${data.error}`)}
+    })}  
+  
+  const onClose = (id) => setCharacters((previoEstado)=> previoEstado.filter((ch)=>ch.id !== +id));
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <Nav onSearch = {onSearch}/>
+
+       <Cards characters = {characters} onClose = {onClose}/>
     </div>
   );
 }
